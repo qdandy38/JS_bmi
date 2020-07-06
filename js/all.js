@@ -4,15 +4,21 @@ const height = document.querySelector('.height');
 const weight = document.querySelector('.kg');
 const list = document.querySelector('.list');
 const reset = document.querySelector('.clean');
+const average = document.querySelector('.average');
 
 let data = [];
+let count = 0; //計算次數
+let totalBmi = 0;
 send.addEventListener('click', bmiCal, false);
 reset.addEventListener('click', clearAll, false);
 
 function clearAll(e) {
     e.preventDefault();
     data = [];
+    count = 0;
+    totalBmi = 0;
     render();
+    average.textContent = '';
 }
 
 function bmiCal(e) {
@@ -22,6 +28,7 @@ function bmiCal(e) {
         let weightVal = parseInt(weight.value.trim());
         let bmi = (weightVal / ((heightVal / 100) ** 2)).toFixed(2);
         let bmiStatus = Status(bmi);
+        let averageVal = averageCal(bmi);
         const bmiInfo = {
             height: heightVal,
             weight: weightVal,
@@ -31,7 +38,7 @@ function bmiCal(e) {
         }
         data.push(bmiInfo);
 
-        render();
+        render(averageVal);
         height.value = '';
         weight.value = '';
     } else {
@@ -76,8 +83,16 @@ function Status(bmi) {
     return status;
 }
 
+// 計算平均
+function averageCal(bmi) {
+    count++;
+    totalBmi += Number(bmi);
+
+    return (totalBmi / count).toFixed(2);
+}
 // 渲染畫面
-function render() {
+function render(averageVal) {
+    average.textContent = `總計測量${count}次，平均BMI為${averageVal}`;
     let str = '';
     data.forEach(function(item) {
         str += `
